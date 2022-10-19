@@ -1,66 +1,66 @@
 ﻿using clubmembership.Data;
 using clubmembership.Models;
 using clubmembership.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace clubmembership.Controllers
 {
-    public class AnnouncementController : Controller
+    public class MemberController : Controller
     {
-        private AnnoucementRepository _announcementRepository;
-        // GET: AnnouncementController
+        private MemberRepository _memberRepository;
 
-        public AnnouncementController(ApplicationDbContext dbcontext)
+        public MemberController(ApplicationDbContext dbcontext)
         {
-            _announcementRepository = new AnnoucementRepository(dbcontext);
+            _memberRepository = new MemberRepository(dbcontext);
         }
-
+        // GET: MemberController
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: AnnouncementController/Details/5
+        // GET: MemberController/Details/5
         public ActionResult Details(int id)
         {
-            return View("CreateAnnouncement");
+            return View();
         }
 
-        // GET: AnnouncementController/Create
+        // GET: MemberController/Create
         public ActionResult Create()
         {
-            return View("CreateAnnouncement");
+            return View("CreateMember");
         }
 
-        // POST: AnnouncementController/Create
+        // POST: MemberController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
             try
             {
-                var model = new AnnouncementModel();
+                var model = new MemberModel();
                 var task = TryUpdateModelAsync(model);
                 task.Wait();
                 if (task.Result)
                 {
-                    _announcementRepository.InsertAnnouncement(model);
+                    _memberRepository.InsertMember(model);
                 }
-                return View("CreateAnnouncement");
+                return View("CreateMember");
             }
-            catch (Exception error)
+            catch
             {
-                return View("CreateAnnouncement");
+                return View("CreateMember");
             }
         }
 
-        // GET: AnnouncementController/Edit/5
+        // GET: MemberController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: AnnouncementController/Edit/5
+        // POST: MemberController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -75,13 +75,13 @@ namespace clubmembership.Controllers
             }
         }
 
-        // GET: AnnouncementController/Delete/5
+        // GET: MemberController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: AnnouncementController/Delete/5
+        // POST: MemberController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

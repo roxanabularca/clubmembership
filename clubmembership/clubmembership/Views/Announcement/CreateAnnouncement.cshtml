@@ -11,13 +11,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateAnnouncement">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+           @* <div class="form-group">
                 <label asp-for="IdAnnouncement" class="control-label"></label>
                 <input asp-for="IdAnnouncement" class="form-control" />
                 <span asp-validation-for="IdAnnouncement" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="ValidForm" class="control-label"></label>
                 <input asp-for="ValidForm" class="form-control" />
