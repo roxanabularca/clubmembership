@@ -7,8 +7,10 @@ namespace clubmembership.Repository
     public class CodeSnippetRepository
     {
         private readonly ApplicationDbContext _DBContext;
+        private MemberRepository _memberRepository;
         public CodeSnippetRepository()
         {
+            _memberRepository = new MemberRepository();
             _DBContext = new ApplicationDbContext();
         }
         public CodeSnippetRepository(ApplicationDbContext dBContext)
@@ -46,7 +48,7 @@ namespace clubmembership.Repository
             }
             return dbobject;
         }
-        public List<CodeSnippetModel> GetAllAnnoucement()
+        public List<CodeSnippetModel> GetAllCodeSnippets()
         {
             var list = new List<CodeSnippetModel>();
             foreach (var dbobject in _DBContext.CodeSnippets)
@@ -62,6 +64,15 @@ namespace clubmembership.Repository
         public void InsertCodeSnippet(CodeSnippetModel model)
         {
             model.IdCodeSnippet = Guid.NewGuid();
+            model.DateTimeAdded = DateTime.Now;
+            //var dict = new SortedDictionary<DateTime, Guid>();
+            //foreach (var dbOject in _DBContext.CodeSnippets)
+            //{
+            //    MapDBObjectToModel(dbOject);
+            //    dict.Add(dbOject.DateTimeAdded, dbOject.IdCodeSnippet);
+            //    model.IdSnippetPreviousVersion = dict.Values.Last();
+
+            //}
             _DBContext.CodeSnippets.Add(MapModelToDBObject(model));
             _DBContext.SaveChanges();
         }
@@ -80,14 +91,26 @@ namespace clubmembership.Repository
                 _DBContext.SaveChanges();
             }
         }
-        public void DeleteCodeSnippet(CodeSnippet model)
+        public void DeleteCodeSnippet(Guid id)
         {
-            var dbobject = _DBContext.CodeSnippets.FirstOrDefault(x => x.IdCodeSnippet == model.IdCodeSnippet);
+            var dbobject = _DBContext.CodeSnippets.FirstOrDefault(x => x.IdCodeSnippet == id);
             if (dbobject != null)
             {
                 _DBContext.CodeSnippets.Remove(dbobject);
                 _DBContext.SaveChanges();
             }
+        }
+
+        public CodeSnippetModel GetLatestCodeSnippet()
+        {
+            //var list = new List<CodeSnippetModel>();
+            //foreach (var dbobject in _DBContext.CodeSnippets)
+            //{
+            //    list.Add(MapDBObjectToModel(dbobject));
+            //}
+
+            return MapDBObjectToModel(_DBContext.CodeSnippets.OrderByDescending(x => x.DateTimeAdded).FirstOrDefault());
+                                                   
         }
 
     }

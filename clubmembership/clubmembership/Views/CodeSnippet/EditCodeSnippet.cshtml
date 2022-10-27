@@ -1,23 +1,23 @@
 ﻿@model clubmembership.Models.CodeSnippetModel
 
 @{
-    ViewData["Title"] = "CreateCodeSnippet";
+    ViewData["Title"] = "EditCodeSnippet";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>CreateCodeSnippet</h1>
+<h1>EditCodeSnippet</h1>
 
 <h4>CodeSnippetModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
+            <div class="form-group">
                 <label asp-for="IdCodeSnippet" class="control-label"></label>
                 <input asp-for="IdCodeSnippet" class="form-control" />
                 <span asp-validation-for="IdCodeSnippet" class="text-danger"></span>
-            </div>*@
+            </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -30,9 +30,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdMember" class="control-label"></label>
-               @* <input asp-for="IdMember" class="form-control" />*@
-                @Html.DropDownList("IdMember", ViewBag.MemberList, "", "")
-              @*  @Html.DropDownList("IdMember", @ViewBag.MemberList, "",new {})*@;
+                <input asp-for="IdMember" class="form-control" />
                 <span asp-validation-for="IdMember" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,16 +40,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdSnippetPreviousVersion" class="control-label"></label>
-                <input asp-for="IdSnippetPreviousVersion" class="form-control" readonly />
+                <input asp-for="IdSnippetPreviousVersion" class="form-control" />
                 <span asp-validation-for="IdSnippetPreviousVersion" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
                 <label asp-for="DateTimeAdded" class="control-label"></label>
                 <input asp-for="DateTimeAdded" class="form-control" />
                 <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
-            </div>*@
+            </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -1,0 +1,61 @@
+﻿@model clubmembership.Models.CodeSnippetModel
+
+@{
+    ViewData["Title"] = "DetailsCodeSnippet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>DetailsCodeSnippet</h1>
+
+<div>
+    <h4>CodeSnippetModel</h4>
+    <hr />
+    <dl class="row">
+      @*  <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdCodeSnippet)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCodeSnippet)
+        </dd>*@
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ContentCode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ContentCode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdMember)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdMember)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Revision)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Revision)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdSnippetPreviousVersion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdSnippetPreviousVersion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DateTimeAdded)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.IdCodeSnippet  }) |
+    <a asp-action="Index">Back to List</a>
+</div>

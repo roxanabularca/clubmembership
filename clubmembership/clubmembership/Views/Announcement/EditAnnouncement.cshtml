@@ -1,27 +1,28 @@
 ﻿@model clubmembership.Models.AnnouncementModel
 
 @{
-    ViewData["Title"] = "CreateAnnouncement";
+    ViewData["Title"] = "EditAnnouncement";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>CreateAnnouncement</h1>
+<h1>EditAnnouncement</h1>
 
 <h4>AnnouncementModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" >
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           @* <div class="form-group">
+            <div class="form-group">
                 <label asp-for="IdAnnouncement" class="control-label"></label>
                 <input asp-for="IdAnnouncement" class="form-control" />
                 <span asp-validation-for="IdAnnouncement" class="text-danger"></span>
-            </div>*@
+            </div>
             <div class="form-group">
                 <label asp-for="ValidForm" class="control-label"></label>
                 <input asp-for="ValidForm" class="form-control" />
-                <span asp-validation-for="ValidForm" class="text-danger"></span>
+                <span asp-validation-for="ValidForm" class="text-d
+ anger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ValidTo" class="control-label"></label>
@@ -49,7 +50,7 @@
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -59,3 +60,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

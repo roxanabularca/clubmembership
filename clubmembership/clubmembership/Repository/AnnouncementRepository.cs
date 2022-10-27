@@ -47,7 +47,7 @@ namespace clubmembership.Repository
             }
             return dbobject;
         }
-        public List<AnnouncementModel> GetAllAnnoucement()
+        public List<AnnouncementModel> GetAllAnnoucements()
         { 
             var list = new List<AnnouncementModel>();
             foreach (var dbobject in _DBContext.Announcements)
@@ -81,14 +81,21 @@ namespace clubmembership.Repository
                 _DBContext.SaveChanges();
             }
         }
-        public void DeleteAnnouncement(AnnouncementModel model)
+
+        internal void DeleteAnnouncement(Guid id)
         {
-            var dbobject = _DBContext.Announcements.FirstOrDefault(x => x.IdAnnouncement == model.IdAnnouncement);
+            var dbobject = _DBContext.Announcements.FirstOrDefault(x => x.IdAnnouncement == id);
             if (dbobject != null)
-            {
+            { 
                 _DBContext.Announcements.Remove(dbobject);
                 _DBContext.SaveChanges();
+            
             }
+        }
+
+        internal object GetAnnouncementById(int id)
+        {
+            throw new NotImplementedException();
         }
 
 

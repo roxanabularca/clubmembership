@@ -1,11 +1,13 @@
 ﻿using clubmembership.Data;
 using clubmembership.Models;
 using clubmembership.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace clubmembership.Controllers
 {
+    //[Authorize(Roles ="User")]
     public class MemberController : Controller
     {
         private MemberRepository _memberRepository;
@@ -17,13 +19,15 @@ namespace clubmembership.Controllers
         // GET: MemberController
         public ActionResult Index()
         {
-            return View();
+            var list = _memberRepository.GetAllMembers();
+            return View(list);
         }
 
         // GET: MemberController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View();
+            var model = _memberRepository.GetMemberById(id);
+            return View("DetailsMember",model);
         }
 
         // GET: MemberController/Create
@@ -55,18 +59,26 @@ namespace clubmembership.Controllers
         }
 
         // GET: MemberController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var model = _memberRepository.GetMemberById(id);
+            return View("EditMember",model);
         }
 
         // POST: MemberController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
+                var model = new MemberModel();
+                var task = TryUpdateModelAsync(model);
+                task.Wait();
+                if (task.Result)
+                { 
+                _memberRepository.UpdateMember(model);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -76,23 +88,25 @@ namespace clubmembership.Controllers
         }
 
         // GET: MemberController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var model = _memberRepository.GetMemberById(id);
+            return View("DeleteMember",model);
         }
 
         // POST: MemberController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
+                _memberRepository.DeleteMember(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("Delete",id);
             }
         }
     }

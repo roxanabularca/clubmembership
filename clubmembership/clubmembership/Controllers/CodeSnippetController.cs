@@ -3,33 +3,45 @@ using clubmembership.Models;
 using clubmembership.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace clubmembership.Controllers
 {
     public class CodeSnippetController : Controller
     {
         private CodeSnippetRepository _codesnippetRepository;
+        private MemberRepository _memberRepository;
 
         public CodeSnippetController(ApplicationDbContext dbcontext)
         {
+            _memberRepository = new MemberRepository(dbcontext);
+
             _codesnippetRepository = new CodeSnippetRepository(dbcontext);
         }
         // GET: CodeSnippetController
         public ActionResult Index()
         {
-            return View();
+            var list = _codesnippetRepository.GetAllCodeSnippets();
+            return View(list);
         }
 
         // GET: CodeSnippetController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View();
+            var model = _codesnippetRepository.GetCodeSnippetById(id);
+            return View("DetailsCodeSnippet", model);
         }
 
         // GET: CodeSnippetController/Create
         public ActionResult Create()
         {
-            return View("CreateCodeSnippet");
+            var members = _memberRepository.GetAllMembers();
+            var memberList = members.Select(x=> new SelectListItem(x.Name,x.IdMember.ToString()));
+            var model = new CodeSnippetModel();
+            model.IdSnippetPreviousVersion = _codesnippetRepository.GetLatestCodeSnippet().IdCodeSnippet;
+            ViewBag.MemberList = memberList;
+            //ViewBag.lastcodesnippetversion = _codesnippetRepository.GetLatestCodeSnippet().IdCodeSnippet.ToString();
+            return View("CreateCodeSnippet",model);
         }
 
         // POST: CodeSnippetController/Create
@@ -44,29 +56,45 @@ namespace clubmembership.Controllers
                 task.Wait();
                 if (task.Result)
                 {
-                    _codesnippetRepository.InsertCodeSnippet(model);
+                    if (model.IdCodeSnippet == Guid.Empty)
+                    {
+                        _codesnippetRepository.InsertCodeSnippet(model);
+                    }
+                    else
+                    {
+                        _codesnippetRepository.UpdateCodeSnippet(model);
+                    }
                 }
-                return View("CreateCodeSnippet");
+                return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception error)
             {
-                return View("CreateCodeSnippet");
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: CodeSnippetController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var model = _codesnippetRepository.GetCodeSnippetById(id);
+            
+            return View("EditCodeSnippet",model);
         }
 
         // POST: CodeSnippetController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
+                var model = new CodeSnippetModel();
+                var task = TryUpdateModelAsync(model);
+                task.Wait();
+                if (task.Result)
+                {
+                    _codesnippetRepository.UpdateCodeSnippet(model);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -76,23 +104,26 @@ namespace clubmembership.Controllers
         }
 
         // GET: CodeSnippetController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var model = _codesnippetRepository.GetCodeSnippetById(id);
+
+            return View("DeleteCodeSnippet",model);
         }
 
         // POST: CodeSnippetController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
+                _codesnippetRepository.DeleteCodeSnippet(id); 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("Delete",id);
             }
         }
     }

@@ -45,7 +45,7 @@ namespace clubmembership.Repository
             }
             return dbobject;
         }
-        public List<MembershipModel> GetAllMembership()
+        public List<MembershipModel> GetAllMemberships()
         {
             var list = new List<MembershipModel>();
             foreach (var dbobject in _DBContext.Memberships)
@@ -78,9 +78,9 @@ namespace clubmembership.Repository
                 _DBContext.SaveChanges();
             }
         }
-        public void DeleteMembership(MembershipModel model)
+        public void DeleteMembership(Guid id)
         {
-            var dbobject = _DBContext.Memberships.FirstOrDefault(x => x.Idmembership == model.Idmembership);
+            var dbobject = _DBContext.Memberships.FirstOrDefault(x => x.Idmembership == id);
             if (dbobject != null)
             {
                 _DBContext.Memberships.Remove(dbobject);

@@ -8,27 +8,30 @@ namespace clubmembership.Controllers
 {
     public class MembershipTypeController : Controller
     {
-        private MembershipTypeRepository _membershipTypreRepository;
+        private MembershipTypeRepository _membershipTypeRepository;
         public MembershipTypeController(ApplicationDbContext dbcontext)
         {
-            _membershipTypreRepository = new MembershipTypeRepository(dbcontext);
+            _membershipTypeRepository = new MembershipTypeRepository(dbcontext);
         }
         // GET: MembershipTypeController
         public ActionResult Index()
         {
-            return View();
+            var list = _membershipTypeRepository.GetAllMembershipTypes();
+            return View(list);
         }
 
         // GET: MembershipTypeController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
+            var model = _membershipTypeRepository.GetMembershipTypeById(id);
+            return View("DetailsMemberShipType", model);
             return View();
         }
 
         // GET: MembershipTypeController/Create
         public ActionResult Create()
         {
-            return View("CreateMembershipTypeController");
+            return View("CreateMembershipType");
         }
 
         // POST: MembershipTypeController/Create
@@ -43,31 +46,39 @@ namespace clubmembership.Controllers
                 task.Wait();
                 if(task.Result)
                 {
-                    _membershipTypreRepository.InsertMembershipType(model);
+                    _membershipTypeRepository.InsertMembershipType(model);
 
                 }
 
-                return View("CreateMembershipTypeController");
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View("CreateMembershipTypeController");
+                return View("CreateMembershipType");
             }
         }
 
         // GET: MembershipTypeController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var model = _membershipTypeRepository.GetMembershipTypeById(id);
+            return View("EditMembershipType",model);
         }
 
         // POST: MembershipTypeController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
+                var model = new MembershipTypeModel();
+                var task = TryUpdateModelAsync(model);
+                task.Wait();
+                if (task.Result)
+                {
+                    _membershipTypeRepository.UpdateMembershipType(model);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -77,23 +88,25 @@ namespace clubmembership.Controllers
         }
 
         // GET: MembershipTypeController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var model = _membershipTypeRepository.GetMembershipTypeById(id);
+            return View("DeleteMembershipType", model);
         }
 
         // POST: MembershipTypeController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
+                _membershipTypeRepository.DeleteMembershipType(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("Delete",id);
             }
         }
     }

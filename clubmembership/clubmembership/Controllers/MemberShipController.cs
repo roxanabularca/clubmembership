@@ -16,19 +16,21 @@ namespace clubmembership.Controllers
         // GET: MemberShipController
         public ActionResult Index()
         {
-            return View();
+            var list = _membershipRepository.GetAllMemberships();
+            return View(list);
         }
 
         // GET: MemberShipController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View();
+            var model = _membershipRepository.GetMembershipById(id);
+            return View("DetailsMemberShip", model);
         }
 
         // GET: MemberShipController/Create
         public ActionResult Create()
         {
-            return View("CreateMmembership");
+            return View("CreateMembership");
         }
 
         // POST: MemberShipController/Create
@@ -46,7 +48,7 @@ namespace clubmembership.Controllers
                     _membershipRepository.InsertMembership(model);
                 }
 
-                return View("CreateMmembership");
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -55,18 +57,26 @@ namespace clubmembership.Controllers
         }
 
         // GET: MemberShipController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var model = _membershipRepository.GetMembershipById(id);
+            return View("EditMemberShip",model);
         }
 
         // POST: MemberShipController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
+                var model = new MembershipModel();
+                var task = TryUpdateModelAsync(model);
+                task.Wait();
+                if (task.Result)
+                {
+                    _membershipRepository.UpdateMembership(model);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -76,23 +86,25 @@ namespace clubmembership.Controllers
         }
 
         // GET: MemberShipController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var model = _membershipRepository.GetMembershipById(id);
+            return View("DeleteMemberShip",model);
         }
 
         // POST: MemberShipController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
+                _membershipRepository.DeleteMembership(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("Delete",id);
             }
         }
     }

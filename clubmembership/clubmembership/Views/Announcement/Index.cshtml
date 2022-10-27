@@ -1,5 +1,83 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<clubmembership.Models.AnnouncementModel>
+
 @{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@if(Model !=null)
+{
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.IdAnnouncement)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.ValidForm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValidTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tags)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.IdAnnouncement)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.ValidForm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValidTo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tags)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new {  id = item.IdAnnouncement  }) |
+                @Html.ActionLink("Details", "Details", new { id=item.IdAnnouncement}) |
+                        @if (User.IsInRole("User") || User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink("Delete", "Delete", new {  id=item.IdAnnouncement })
+                        }
+                    </td>
+        </tr>
+}
+    </tbody>
+</table>
+}
+else
+{
+    <p>Empty model
+        </p>
 }

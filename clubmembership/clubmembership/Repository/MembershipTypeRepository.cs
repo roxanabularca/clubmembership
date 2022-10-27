@@ -42,7 +42,7 @@ namespace clubmembership.Repository
             }
             return dbobject;
         }
-        public List<MembershipTypeModel> GetAllMembershipType()
+        public List<MembershipTypeModel> GetAllMembershipTypes()
         {
             var list = new List<MembershipTypeModel>();
             foreach (var dbobject in _DBContext.MembershipTypes)
@@ -73,9 +73,9 @@ namespace clubmembership.Repository
                 _DBContext.SaveChanges();
             }
         }
-        public void DeleteMembershipType(MembershipTypeModel model)
+        public void DeleteMembershipType(Guid id)
         {
-            var dbobject = _DBContext.MembershipTypes.FirstOrDefault(x => x.IdMembershipType == model.IdMembershipType);
+            var dbobject = _DBContext.MembershipTypes.FirstOrDefault(x => x.IdMembershipType == id);
             if (dbobject != null)
             {
                 var memberships = _DBContext.Memberships.Where(x => x.IdmembershipType == dbobject.IdMembershipType);

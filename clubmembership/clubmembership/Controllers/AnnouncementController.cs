@@ -1,6 +1,7 @@
 ﻿using clubmembership.Data;
 using clubmembership.Models;
 using clubmembership.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace clubmembership.Controllers
@@ -17,13 +18,15 @@ namespace clubmembership.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            var list = _announcementRepository.GetAllAnnoucements();
+            return View(list);
         }
 
         // GET: AnnouncementController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View("CreateAnnouncement");
+            var model = _announcementRepository.GetAnnouncementById(id);
+            return View("DetailsAnnouncement", model);
         }
 
         // GET: AnnouncementController/Create
@@ -44,9 +47,16 @@ namespace clubmembership.Controllers
                 task.Wait();
                 if (task.Result)
                 {
-                    _announcementRepository.InsertAnnouncement(model);
+                    if (model.IdAnnouncement == Guid.Empty)
+                    {
+                        _announcementRepository.InsertAnnouncement(model);
+                    }
+                    else
+                    {
+                        _announcementRepository.UpdateAnnoucement(model);
+                    }
                 }
-                return View("CreateAnnouncement");
+                return View("CreateAnnouncement");// sau RedirectToAction("Index")
             }
             catch (Exception error)
             {
@@ -55,44 +65,59 @@ namespace clubmembership.Controllers
         }
 
         // GET: AnnouncementController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var model = _announcementRepository.GetAnnouncementById(id);
+            return View("EditAnnouncement",model);
         }
 
         // POST: AnnouncementController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var model = new AnnouncementModel();
+                var task = TryUpdateModelAsync(model);
+                task.Wait();
+                 if (task.Result)
+                    {
+                        _announcementRepository.UpdateAnnoucement(model);
+                    }
+                    return RedirectToAction(nameof(Index));// daca punem doar RedirectToAction este un pas in plus pt PC vs return View ("Index")
             }
             catch
             {
-                return View();
+                return RedirectToAction("Edit", id);
             }
         }
 
         // GET: AnnouncementController/Delete/5
-        public ActionResult Delete(int id)
+
+        [Authorize(Roles= "User, Admin")]
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var model = _announcementRepository.GetAnnouncementById(id);
+
+            return View("DeleteAnnouncement",model);
         }
 
         // POST: AnnouncementController/Delete/5
+
+        [Authorize(Roles = "User, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
+                _announcementRepository.DeleteAnnouncement(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("Delete",id); // folosim View daca nu tr sa dam si id, se foloseste REdirect pt ca avem id
             }
         }
     }
